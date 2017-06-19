@@ -130,6 +130,21 @@ app.post('/addstream', function(req, res) {
                 procObj: ffmpegSpawnAsync(req.body.inputUrl, req.body.outputUrl)
 
             });
+            let idToKill = registredStream[registredStream.length - 1].id;
+            registredStream[registredStream.length - 1].procObj.on('close', (code) => {
+                console.log(`child process exited with code ${code}`);
+                const curId = idToKill;
+                console.log('id = ', curId);
+                registredStream.forEach((item, i, arr) => {
+                    if (item.id == idToKill) {
+                        console.log('item id', item.id);
+                        // remove selected stream srom database
+                        registredStream.splice(i, 1);
+
+                    }
+                });
+
+            });
             return registredStream;
         })
         .then((streams) => {
@@ -139,7 +154,10 @@ app.post('/addstream', function(req, res) {
                 dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
             })
             res.send(dataForSend);
-            // streams[0].procObj.stderr.on('data', function(stderr) {
+
+            // streams.forEach((item. i, arr)=>{
+            // item.procObj.on('close', )
+            // }) .procObj.stderr.on('data', function(stderr) {
             //     console.log('stderr - ', `${stderr}`);
             // });
 
