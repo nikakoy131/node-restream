@@ -5,9 +5,14 @@
         $.post('/info', { "inputUrl": inputUrl }, function(data) {
             console.log('url to send', inputUrl);
             console.log('data recieved!! ', data.info);
-            document.getElementById('stream-info').innerHTML = '<p> Source = ' + data.info.filename + '</p><p> Format = ' + data.info.format_long_name + '</p>' +
-                '<p> FPS = ' + data.info.tags.fps + '</p>' +
-                '<p> Size = ' + data.info.tags.displayWidth + 'x' + data.info.tags.displayHeight + '</p>';
+            if (data.message == 0) {
+                document.getElementById('stream-info').innerHTML = '<p> Source = ' + data.info.filename + '</p><p> Format = ' + data.info.format_long_name + '</p>' +
+                    '<p> FPS = ' + data.info.tags.fps + '</p>' +
+                    '<p> Size = ' + data.info.tags.displayWidth + 'x' + data.info.tags.displayHeight + '</p>';
+            } else {
+                document.getElementById('stream-info').innerHTML = '<p> Source = ' + data.message + '</p>';
+            }
+
         })
     });
     $('#btn-start-stop').on('click', function(evt) {
@@ -25,5 +30,22 @@
                 document.getElementById('btn-start-stop').innerText = "Start";
             })
         }
+    });
+    $('#btn-add-new').on('click', function(evt) {
+        var input = document.getElementById('in-str-url-reg').value;
+        var output = document.getElementById('out-str-url-reg').value;
+        var name = document.getElementById('name-reg').value;
+        var streaList = document.getElementById('stream-list-ul').innerHTML;
+        // var btnStartStop = document.getElementById('btn-start-stop');
+        $.post('/addstream', { "inputUrl": input, "outputUrl": output, "name": name }, function(data) {
+            console.log('after_add_response = ', data);
+            console.log('data length = ', data.length);
+            var dataToMount = '';
+            for (var i = 0; i < data.length; i++) {
+                dataToMount += '<li id="' + data[i].id + '"> stream' + data[i].name + ' ' + data[i].outputUrl + '</li>';
+            }
+            document.getElementById('stream-list-ul').innerHTML = dataToMount;
+
+        });
     });
 })();

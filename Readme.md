@@ -32,9 +32,9 @@ For install nginx you need compile it from source. For the instruction go to [ng
 
  1. Just input on webpage for place rtmp stream +
  2. Button for get info about stream in human readable format +
- 3. Button for restream start \ stop.
+ 3. Button for restream start \ stop. +
  4. When streaming active show status (long poling?)
- 5. Show information about input stream status restarts counter.
+ 5. Show information about input stream status, restarts counter.
  6. Hls stream player.
  7. Play button on added stream
  8. Recording button.
