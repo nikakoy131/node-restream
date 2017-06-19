@@ -1,0 +1,19 @@
+{
+    "name": "node-restream",
+    "version": "0.0.1",
+    "description": "This free Node.js + FFmpeg + nginx-rtmp-module based restream app (like restream.io).",
+    "main": "server.js",
+    "scripts": {
+        "test": "test",
+        "start": "nodemon server.js"
+    },
+    "author": "Ruslan Beliy <nikakoy131@gmail.com>",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^1.11.0"
+    },
+    "dependencies": {
+        "body-parser": "^1.17.2",
+        "express": "^4.15.3"
+    }
+}
