@@ -1,4 +1,13 @@
 (function() {
+    function renderStreamList(data) {
+        var dataToMount = '';
+        for (var i = 0; i < data.length; i++) {
+            dataToMount += '<li id="' + data[i].id + '"> stream' + data[i].name + ' ' + data[i].outputUrl + ' id = ' +
+                data[i].id + '<button class="btn-kill" id="' + data[i].id + '">KILL!!</button></li>';
+        }
+        document.getElementById('stream-list-ul').innerHTML = dataToMount;
+
+    }
     console.log('JS WORK!!!');
     $('#btn-info').on('click', function(evt) {
         var inputUrl = document.getElementById('in-str-url').value;
@@ -35,17 +44,28 @@
         var input = document.getElementById('in-str-url-reg').value;
         var output = document.getElementById('out-str-url-reg').value;
         var name = document.getElementById('name-reg').value;
-        var streaList = document.getElementById('stream-list-ul').innerHTML;
+        var streamList = document.getElementById('stream-list-ul').innerHTML;
         // var btnStartStop = document.getElementById('btn-start-stop');
         $.post('/addstream', { "inputUrl": input, "outputUrl": output, "name": name }, function(data) {
             console.log('after_add_response = ', data);
             console.log('data length = ', data.length);
-            var dataToMount = '';
-            for (var i = 0; i < data.length; i++) {
-                dataToMount += '<li id="' + data[i].id + '"> stream' + data[i].name + ' ' + data[i].outputUrl + '</li>';
-            }
-            document.getElementById('stream-list-ul').innerHTML = dataToMount;
-
+            renderStreamList(data);
         });
+    });
+    $('#btn-refrash-list').on('click', function(evt) {
+        $.get('/liststreams', function(data) {
+            renderStreamList(data);
+        });
+    });
+    $('#stream-list-ul').on('click', function(evt) {
+        console.log('evt target = ', evt.target);
+        if ($(evt.target).hasClass('btn-kill')) {
+            $.ajax({
+                url: '/streams',
+                type: 'delete',
+                data: { "id": $(evt.target).attr('id') },
+                success: function(newdata) { renderStreamList(newdata) }
+            })
+        }
     });
 })();

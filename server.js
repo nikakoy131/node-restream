@@ -139,13 +139,38 @@ app.post('/addstream', function(req, res) {
                 dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
             })
             res.send(dataForSend);
-            streams[0].procObj.stderr.on('data', function(stderr) {
-                console.log('stderr - ', `${stderr}`);
-            });
+            // streams[0].procObj.stderr.on('data', function(stderr) {
+            //     console.log('stderr - ', `${stderr}`);
+            // });
 
         });
     // if input stream ok create stream object in streams array with name, input, id, proc object
     // return info with report and status
+});
+app.get('/liststreams', function(req, res) {
+    let dataForSend = [];
+    registredStream.forEach((item, i, arr) => {
+        dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
+    })
+    res.send(dataForSend);
+});
+app.delete('/streams', function(req, res) {
+    let idToKill = req.body.id;
+    console.log('id to kill', idToKill);
+    registredStream.forEach((item, i, arr) => {
+        if (item.id == idToKill) {
+            console.log('item id', item.id);
+            item.procObj.kill();
+            // remove selected stream srom database
+            registredStream.splice(i, 1);
+
+        }
+    });
+    let dataForSend = [];
+    registredStream.forEach((item, i, arr) => {
+        dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
+    })
+    res.send(dataForSend);
 });
 
 app.listen(3003, function() {
