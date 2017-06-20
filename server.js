@@ -99,8 +99,6 @@ app.post('/restream', function(req, res) {
         ffmpegRestream.kill();
         res.send({ "status": "killed" });
     }
-
-
 });
 
 function ffmpegSpawnAsync(input, output, action) {
@@ -135,6 +133,8 @@ app.post('/addstream', function(req, res) {
                 console.log(`child process exited with code ${code}`);
                 const curId = idToKill;
                 console.log('id = ', curId);
+
+                // register callback for auto removing stream proces from db when proces die
                 registredStream.forEach((item, i, arr) => {
                     if (item.id == idToKill) {
                         console.log('item id', item.id);
@@ -148,23 +148,18 @@ app.post('/addstream', function(req, res) {
             return registredStream;
         })
         .then((streams) => {
-            console.log('streams - ', streams);
+            //console.log('streams - ', streams);
             let dataForSend = [];
+            // prepare data for sending to front
             streams.forEach((item, i, arr) => {
                 dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
             })
             res.send(dataForSend);
-
-            // streams.forEach((item. i, arr)=>{
-            // item.procObj.on('close', )
-            // }) .procObj.stderr.on('data', function(stderr) {
-            //     console.log('stderr - ', `${stderr}`);
-            // });
-
         });
     // if input stream ok create stream object in streams array with name, input, id, proc object
     // return info with report and status
 });
+// list streams in db
 app.get('/liststreams', function(req, res) {
     let dataForSend = [];
     registredStream.forEach((item, i, arr) => {
@@ -172,6 +167,7 @@ app.get('/liststreams', function(req, res) {
     })
     res.send(dataForSend);
 });
+// kill process and remove entry from db
 app.delete('/streams', function(req, res) {
     let idToKill = req.body.id;
     console.log('id to kill', idToKill);

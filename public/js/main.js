@@ -2,12 +2,16 @@
     function renderStreamList(data) {
         var dataToMount = '';
         for (var i = 0; i < data.length; i++) {
-            dataToMount += '<li id="' + data[i].id + '"> stream' + data[i].name + ' ' + data[i].outputUrl + ' id = ' +
-                data[i].id + '<button class="btn-kill" id="' + data[i].id + '">KILL!!</button></li>';
+            dataToMount += '<li id="' + data[i].id + '"> Stream name - ' + data[i].name + ' ' + data[i].outputUrl + ' id = ' +
+                data[i].id + ' <button class="btn-kill" id="' + data[i].id + '"> Kill! </button></li>';
         }
         document.getElementById('stream-list-ul').innerHTML = dataToMount;
 
     }
+    // render stream list on page load
+    $.get('/liststreams', function(data) {
+        renderStreamList(data);
+    });
     console.log('JS WORK!!!');
     $('#btn-info').on('click', function(evt) {
         var inputUrl = document.getElementById('in-str-url').value;
