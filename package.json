@@ -2,6 +2,10 @@
     "name": "node-restream",
     "version": "0.0.1",
     "description": "This free Node.js + FFmpeg + nginx-rtmp-module based restream app (like restream.io).",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nikakoy131/node-restream.git"
+    },
     "main": "server.js",
     "scripts": {
         "test": "test",
