@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { spawn } = require('child_process');
 const idGen = require('uuid');
+// const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require('mongodb');
+const assert = require('assert');
 const app = express();
 // static file server in dir public
 app.use(express.static('public'));
@@ -9,8 +12,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.listen(3003, function() {
+    console.log('listening on port 3000!');
+});
 let registredStream = [];
 
+// Promise based getting info about stream
 function ffprobeAsync(streamUrl) {
     return new Promise(function(resolve, reject) {
         const rtmpTimeoutMs = 5000;
@@ -185,8 +192,4 @@ app.delete('/streams', function(req, res) {
         dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
     })
     res.send(dataForSend);
-});
-
-app.listen(3003, function() {
-    console.log('listening on port 3000!');
 });
