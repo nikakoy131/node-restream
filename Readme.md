@@ -45,21 +45,21 @@ Go to [localhost:3003](http://localhost:3003) in your browser
 
  1. Just input on webpage for place rtmp stream +
  2. Button for get info about stream in human readable format +
- 3. Button for restream start \ stop. +  
+ 3. Button for re-stream start \ stop. +  
   3.1 Multiply streaming +  
   3.2 Refresh stream list +  
-  3.3 Alow to kill selected stream +
+  3.3 Allow to kill selected stream +
  4. Mongo db save streams
  5. Authorization for one user \ for others - please login\ first user - admin
   5.1. Login just by name  
-  5.2. Refactor code to save stream linked to user  
+  5.2. Re-factor code to save stream linked to user  
   5.3. True login with password  
   ..5.3.1. Registration page  
   ..5.3.2. Login page  
   ..5.3.3. Page for removing user  
  6. Play button on added stream
  7. Hls stream player.
- 8. Respawn stream when it die
+ 8. Re-spawn stream when it die
  9. Show information about input stream (status, restarts counter).
  10. Recording button
  
@@ -68,5 +68,5 @@ Go to [localhost:3003](http://localhost:3003) in your browser
 ----------
 **KNOWN BUGS**  
 
- 1. Streams die without "close" callback emited
+ 1. Streams die without "close" callback emitted
  2. When you kill stream, stream die but ffmpeg process still running (process running, stream no)
