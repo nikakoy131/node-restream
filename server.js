@@ -5,6 +5,7 @@ const idGen = require('uuid');
 // const MongoClient = require('mongodb').MongoClient;
 const { MongoClient } = require('mongodb');
 const assert = require('assert');
+const NODE_PORT = process.env.PORT || 3003
 const app = express();
 // static file server in dir public
 app.use(express.static('public'));
@@ -12,8 +13,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.listen(3003, function() {
-    console.log('listening on port 3000!');
+app.listen(NODE_PORT, function() {
+    console.log(`listening on port ${NODE_PORT}!`);
 });
 let registredStream = [];
 
