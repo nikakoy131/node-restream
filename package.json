@@ -13,7 +13,39 @@
     },
     "author": "Ruslan Beliy <nikakoy131@gmail.com>",
     "license": "ISC",
+    "eslintConfig": {
+        "extends": [
+            "airbnb-base",
+            "prettier"
+        ],
+        "env": {
+            "node": true
+        },
+        "rules": {
+            "indent": [
+                "error",
+                4
+            ],
+            "eol-last": [
+                "error",
+                "never"
+            ],
+            "object-shorthand": [
+                "error",
+                "never"
+            ],
+            "prefer-template": 0,
+            "comma-dangle": [
+                "error",
+                "never"
+            ]
+        }
+    },
     "devDependencies": {
+        "eslint": "^4.14.0",
+        "eslint-config-airbnb-base": "^12.1.0",
+        "eslint-config-prettier": "^2.9.0",
+        "eslint-plugin-import": "^2.8.0",
         "nodemon": "^1.11.0"
     },
     "dependencies": {

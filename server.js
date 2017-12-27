@@ -4,7 +4,7 @@ const { spawn } = require('child_process');
 const idGen = require('uuid');
 // const MongoClient = require('mongodb').MongoClient;
 const { MongoClient } = require('mongodb');
-const assert = require('assert');
+// const assert = require('assert');
 const NODE_PORT = process.env.PORT || 3003
 const app = express();
 // static file server in dir public
@@ -14,24 +14,25 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-app.listen(NODE_PORT, function() {
+app.listen(NODE_PORT, () => {
     console.log(`listening on port ${NODE_PORT}!`);
 });
-let registredStream = [];
+const registredStream = [];
+/* eslint-disable no-plusplus */
 
 // Promise based getting info about stream
 function ffprobeAsync(streamUrl) {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         const rtmpTimeoutMs = 5000;
         let data = '';
-        let ffprobeOptions = [
+        const ffprobeOptions = [
             streamUrl,
             '-print_format',
             'json',
             '-v',
             'quiet',
             '-show_format',
-            //'-show_streams',
+            // '-show_streams',
             '-pretty'
         ];
         setTimeout(() => {
@@ -43,12 +44,12 @@ function ffprobeAsync(streamUrl) {
             data += dataChunk.toString('utf8');
         });
 
-        ffprobe.stderr.on('data', (data) => {
-            console.log(`ffprobeAsync stderr: ${data}`);
+        ffprobe.stderr.on('data', (probeData) => {
+            console.log(`ffprobeAsync stderr: ${probeData}`);
         });
 
         ffprobe.on('close', (code) => {
-            if (code == 0) {
+            if (code === 0) {
                 resolve({ "message": code, "info": JSON.parse(data).format });
             } else {
                 console.log('Ffprobe killed code = ', code);
@@ -58,7 +59,7 @@ function ffprobeAsync(streamUrl) {
     });
 }
 // get info about a stream
-app.post('/info', function(req, res) {
+app.post('/info', (req, res) => {
     console.log(req.body.inputUrl);
     ffprobeAsync(req.body.inputUrl)
         .then((data) => {
@@ -71,12 +72,10 @@ app.post('/info', function(req, res) {
 });
 // restream stream
 let ffmpegRestream;
-app.post('/restream', function(req, res) {
+app.post('/restream', (req, res) => {
     let counter = 0;
-    let inputUrl = req.body.inputUrl;
-    let outputUrl = req.body.outputUrl;
-    let action = req.body.action;
-    let ffmpegOptions = [
+    const { inputUrl, outputUrl, action } = req.body;
+    const ffmpegOptions = [
         '-hide_banner',
         '-re',
         '-i',
@@ -87,7 +86,7 @@ app.post('/restream', function(req, res) {
         'flv',
         outputUrl
     ];
-    if (action == 'run') {
+    if (action === 'run') {
         res.send({ "status": "starting" });
 
         // set ffmpeg options
@@ -100,18 +99,18 @@ app.post('/restream', function(req, res) {
         });
         ffmpegRestream.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
-            //res.send({ "status": "closed" });
+            // res.send({ "status": "closed" });
         });
-    } else if (action == 'keep') {
+    } else if (action === 'keep') {
         // do something
-    } else if (action == 'kill') {
+    } else if (action === 'kill') {
         ffmpegRestream.kill();
         res.send({ "status": "killed" });
     }
 });
 
 function ffmpegSpawnAsync(input, output, action) {
-    let ffmpegOptions = [
+    const ffmpegOptions = [
         '-hide_banner',
         '-re',
         '-i',
@@ -124,7 +123,7 @@ function ffmpegSpawnAsync(input, output, action) {
     ];
     return spawn('ffmpeg', ffmpegOptions);
 }
-app.post('/addstream', function(req, res) {
+app.post('/addstream', (req, res) => {
     // get info about input stream
     ffprobeAsync(req.body.inputUrl)
         .then((data) => {
@@ -137,7 +136,7 @@ app.post('/addstream', function(req, res) {
                 procObj: ffmpegSpawnAsync(req.body.inputUrl, req.body.outputUrl)
 
             });
-            let idToKill = registredStream[registredStream.length - 1].id;
+            const idToKill = registredStream[registredStream.length - 1].id;
             registredStream[registredStream.length - 1].procObj.on('close', (code) => {
                 console.log(`child process exited with code ${code}`);
                 const curId = idToKill;
@@ -145,7 +144,7 @@ app.post('/addstream', function(req, res) {
 
                 // register callback for auto removing stream proces from db when proces die
                 registredStream.forEach((item, i, arr) => {
-                    if (item.id == idToKill) {
+                    if (item.id === idToKill) {
                         console.log('item id', item.id);
                         // remove selected stream srom database
                         registredStream.splice(i, 1);
@@ -157,8 +156,8 @@ app.post('/addstream', function(req, res) {
             return registredStream;
         })
         .then((streams) => {
-            //console.log('streams - ', streams);
-            let dataForSend = [];
+            // console.log('streams - ', streams);
+            const dataForSend = [];
             // prepare data for sending to front
             streams.forEach((item, i, arr) => {
                 dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
@@ -169,19 +168,19 @@ app.post('/addstream', function(req, res) {
     // return info with report and status
 });
 // list streams in db
-app.get('/liststreams', function(req, res) {
-    let dataForSend = [];
+app.get('/liststreams', (req, res) => {
+    const dataForSend = [];
     registredStream.forEach((item, i, arr) => {
         dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
     })
     res.send(dataForSend);
 });
 // kill process and remove entry from db
-app.delete('/streams', function(req, res) {
-    let idToKill = req.body.id;
+app.delete('/streams', (req, res) => {
+    const idToKill = req.body.id;
     console.log('id to kill', idToKill);
     registredStream.forEach((item, i, arr) => {
-        if (item.id == idToKill) {
+        if (item.id === idToKill) {
             console.log('item id', item.id);
             item.procObj.kill();
             // remove selected stream srom database
@@ -189,7 +188,7 @@ app.delete('/streams', function(req, res) {
 
         }
     });
-    let dataForSend = [];
+    const dataForSend = [];
     registredStream.forEach((item, i, arr) => {
         dataForSend.push({ "id": item.id, "name": item.name, "inputUrl": item.inputUrl, "outputUrl": item.outputUrl, "data": item.data })
     })
