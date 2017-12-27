@@ -9,6 +9,7 @@ const NODE_PORT = process.env.PORT || 3003
 const app = express();
 // static file server in dir public
 app.use(express.static('public'));
+app.use('/restream', express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true

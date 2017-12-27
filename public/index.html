@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <title>Node-Restream app</title>
-    <link rel="stylesheet" href="css/styles.css?v=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
 
     <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
@@ -12,33 +13,32 @@
 </head>
 
 <body>
-    <h1>Node-Restream</h1>
-    <p>Input Stream URL<br>
-        <input type="text" id="in-str-url"></input>
-    </p>
-    <p>
-        <button id="btn-info">Show Info</button>
-    </p>
-    <span id="stream-info"></span>
-    <p>Output Stream URL<br>
-        <input type="text" id="out-str-url"></input>
-    </p>
-    <hr>
-    <p>Register new stream</p>
-    <p>
-        <input type="text" placeholder="in" id="in-str-url-reg"></input>
-        <input type="text" placeholder="out" id="out-str-url-reg"></input>
-        <input type="text" placeholder="name" id="name-reg"></input>
-        <button id="btn-add-new">AddNew</button>
-        <button id="btn-refrash-list">Refrash</button>
-    </p>
-    <p>
-        <ul id="stream-list-ul">
-        </ul>
-    </p>
-
-
-
+    <div class="container">
+        <h1>Node-Restream</h1>
+        <p>Input Stream URL<br>
+            <input type="text" id="in-str-url"></input>
+        </p>
+        <p>
+            <button id="btn-info">Show Info</button>
+        </p>
+        <span id="stream-info"></span>
+        <p>Output Stream URL<br>
+            <input type="text" id="out-str-url"></input>
+        </p>
+        <hr>
+        <p>Register new stream</p>
+        <p>
+            <input type="text" placeholder="in" id="in-str-url-reg"></input>
+            <input type="text" placeholder="out" id="out-str-url-reg"></input>
+            <input type="text" placeholder="name" id="name-reg"></input>
+            <button id="btn-add-new">AddNew</button>
+            <button id="btn-refrash-list">Refrash</button>
+        </p>
+        <p>
+            <ul id="stream-list-ul">
+            </ul>
+        </p>
+    </div>
     <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
     <script src="js/main.js"></script>
 </body>
