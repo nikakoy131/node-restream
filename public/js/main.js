@@ -9,13 +9,13 @@
 
     }
     // render stream list on page load
-    $.get('/liststreams', function(data) {
+    $.get('liststreams', function(data) {
         renderStreamList(data);
     });
     console.log('JS WORK!!!');
     $('#btn-info').on('click', function(evt) {
         var inputUrl = document.getElementById('in-str-url').value;
-        $.post('/info', { "inputUrl": inputUrl }, function(data) {
+        $.post('info', { "inputUrl": inputUrl }, function(data) {
             console.log('url to send', inputUrl);
             console.log('data recieved!! ', data.info);
             if (data.message == 0) {
@@ -33,12 +33,12 @@
         var outputUrl = document.getElementById('out-str-url').value;
         var btnStartStop = document.getElementById('btn-start-stop');
         if (btnStartStop.innerText == 'Start') {
-            $.post('/restream', { "inputUrl": inputUrl, "outputUrl": outputUrl, "action": "run" }, function(data) {
+            $.post('restream', { "inputUrl": inputUrl, "outputUrl": outputUrl, "action": "run" }, function(data) {
                 console.log('status - ', data.status);
                 document.getElementById('btn-start-stop').innerText = "Stop";
             })
         } else if (btnStartStop.innerText == "Stop") {
-            $.post('/restream', { "inputUrl": inputUrl, "outputUrl": outputUrl, "action": "kill" }, function(data) {
+            $.post('restream', { "inputUrl": inputUrl, "outputUrl": outputUrl, "action": "kill" }, function(data) {
                 console.log('status - ', data.status);
                 document.getElementById('btn-start-stop').innerText = "Start";
             })
@@ -50,14 +50,14 @@
         var name = document.getElementById('name-reg').value;
         var streamList = document.getElementById('stream-list-ul').innerHTML;
         // var btnStartStop = document.getElementById('btn-start-stop');
-        $.post('/addstream', { "inputUrl": input, "outputUrl": output, "name": name }, function(data) {
+        $.post('addstream', { "inputUrl": input, "outputUrl": output, "name": name }, function(data) {
             console.log('after_add_response = ', data);
             console.log('data length = ', data.length);
             renderStreamList(data);
         });
     });
     $('#btn-refrash-list').on('click', function(evt) {
-        $.get('/liststreams', function(data) {
+        $.get('liststreams', function(data) {
             renderStreamList(data);
         });
     });
@@ -65,7 +65,7 @@
         console.log('evt target = ', evt.target);
         if ($(evt.target).hasClass('btn-kill')) {
             $.ajax({
-                url: '/streams',
+                url: 'streams',
                 type: 'delete',
                 data: { "id": $(evt.target).attr('id') },
                 success: function(newdata) { renderStreamList(newdata) }
