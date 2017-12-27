@@ -72,47 +72,52 @@ app.post('/info', (req, res) => {
 });
 // restream stream
 let ffmpegRestream;
-app.post('/restream', (req, res) => {
-    let counter = 0;
-    const { inputUrl, outputUrl, action } = req.body;
-    const ffmpegOptions = [
-        '-hide_banner',
-        '-loglevel',
-        'error',
-        '-re',
-        '-i',
-        inputUrl,
-        '-codec',
-        'copy',
-        '-f',
-        'flv',
-        outputUrl
-    ];
-    if (action === 'run') {
-        res.send({ "status": "starting" });
+// app.post('/restream', (req, res) => {
+//     let counter = 0;
+//     const { inputUrl, outputUrl, action } = req.body;
+//     const ffmpegOptions = [
+//         '-hide_banner',
+//         '-re',
+//         '-i',
+//         inputUrl,
+//         '-codec',
+//         'copy',
+//         '-f',
+//         'flv',
+//         outputUrl
+//     ];
+//     console.log('action = ', action);
+//     if (action === 'run') {
+//         res.send({ "status": "starting" });
 
-        // set ffmpeg options
-        ffmpegRestream = spawn('ffmpeg', ffmpegOptions);
+//         // set ffmpeg options
+//         ffmpegRestream = spawn('ffmpeg', ffmpegOptions, { stdio: ['pipe', 'pipe', process.stderr] });
 
-        // yes ffmpeg send status to stderr
-        ffmpegRestream.stderr.on('data', (data) => {
-            console.log('datachunk #=', counter++);
-            console.log(`${data}`);
-        });
-        ffmpegRestream.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-            // res.send({ "status": "closed" });
-        });
-    } else if (action === 'keep') {
-        // do something
-    } else if (action === 'kill') {
-        ffmpegRestream.kill();
-        res.send({ "status": "killed" });
-    }
-});
+//         // yes ffmpeg send status to stderr
+//         ffmpegRestream.stderr.on('data', (data) => {
+//             console.log('datachunk #=', counter++);
+//             console.log(+data.toString());
+//         });
+//         ffmpegRestream.on('close', (code) => {
+//             console.log(`child process exited with code ${code}`);
+//             // res.send({ "status": "closed" });
+//         });
+//     } else if (action === 'keep') {
+//         // do something
+//         ffmpegRestream.stderr.on('data', (data) => {
+//             console.log('datachunk #=', counter++);
+//             console.log(`${data}`);
+//         });
+//     } else if (action === 'kill') {
+//         ffmpegRestream.kill();
+//         res.send({ "status": "killed" });
+//     }
+// });
 
 function ffmpegSpawnAsync(input, output, action) {
     const ffmpegOptions = [
+        '-loglevel',
+        'warning',
         '-hide_banner',
         '-re',
         '-i',
@@ -155,6 +160,9 @@ app.post('/addstream', (req, res) => {
                 });
 
             });
+            registredStream[registredStream.length - 1].procObj.stderr.on('data', (code) => {
+                console.log(req.body.name + ' - ' + code.toString());
+            });
             return registredStream;
         })
         .then((streams) => {
@@ -183,7 +191,7 @@ app.delete('/streams', (req, res) => {
     console.log('id to kill', idToKill);
     registredStream.forEach((item, i, arr) => {
         if (item.id === idToKill) {
-            console.log('item id', item.id);
+            console.log('Killed ' + item.name + ' - item id - ', item.id);
             item.procObj.kill();
             // remove selected stream srom database
             registredStream.splice(i, 1);
