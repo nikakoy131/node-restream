@@ -77,6 +77,8 @@ app.post('/restream', (req, res) => {
     const { inputUrl, outputUrl, action } = req.body;
     const ffmpegOptions = [
         '-hide_banner',
+        '-loglevel',
+        'error',
         '-re',
         '-i',
         inputUrl,
