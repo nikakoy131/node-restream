@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { spawn } = require('child_process');
-const idGen = require('uuid');
+const { randomUUID } = require('crypto');
 const logger = require('./logger');
 // const MongoClient = require('mongodb').MongoClient;
 // const assert = require('assert');
@@ -135,7 +135,7 @@ app.post('/addstream', async (req, res) => {
 
   const procObj = ffmpegSpawnAsync(req.body.inputUrl, req.body.outputUrl);
   const stream = {
-    id: idGen.v1(),
+    id: randomUUID(),
     name: req.body.name,
     inputUrl: req.body.inputUrl,
     outputUrl: req.body.outputUrl,
